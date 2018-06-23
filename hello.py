@@ -3,10 +3,15 @@ from flask import request
 from flask_bootstrap import Bootstrap
 from flask_script import Manager
 from flask_moment import Moment
+from flask_wtf import Form
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
 from datetime import datetime
 
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'some hard to guess string'
+# 密码不应该直接写进代码文件，应该写于配置文件。
 manager = Manager(app)
 bootstrap = Bootstrap(app)
 moment = Moment(app)
@@ -36,6 +41,11 @@ def page_not_found(e):
 @app.errorhandler(500)
 def internal_server_error(e):
     return render_template('500.html'), 500
+
+
+class NameForm(Form):
+    name = StringField('What is your name', validators=[DataRequired()])
+    submit = SubmitField('Submit')
 
 
 if __name__ == "__main__":
